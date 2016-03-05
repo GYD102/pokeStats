@@ -1,0 +1,24 @@
+Bulbasaur 
+----------------
+Poison, Grass Type
+
+Ability: 
+	 
+
+				      Net
+		Base	Nature	EV    IV Range
+HP		45	
+Attack		49	
+Defense		49	
+Sp. Attack	65	
+Sp. Defense	65	
+Speed		45	
+
+		Lvl1
+		(EV,Stat)
+HP				
+Attack		
+Defense		
+Sp. Attack	
+Sp. Defense	
+Speed		
