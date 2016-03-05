@@ -5,12 +5,12 @@ def removeABs(step):
             step[i] = x.replace(x[x.index('<'):(x.index('>')+1)],'')
     return step
 
-def toDicts(step):
+def toDict(step):
     ret = []
     while len(step)!=0:
-        ret.append({step[0]:[int(step[i+1]) for i in range(6)]})
+        ret.append((step[0], [int(step[i+1]) for i in range(6)]))
         step = step[7:]
-    return ret
+    return dict(ret)
 
 def getEVs():
     f = open('evyields.html', 'r+')
@@ -30,7 +30,7 @@ def getEVs():
 
     step3 = removeABs(step2)
     step4 = [x[1:] for x in step3]
-    step5 = toDicts(step4)
+    step5 = toDict(step4)
     return step5
 
 #test = getEVs()
@@ -55,12 +55,11 @@ def getStats():
 
     step3 = removeABs(step2)
     step4 = [x[1:] for x in step3]
-    step5 = toDicts(step4)
+    step5 = toDict(step4)
     return step5
 
-test = getStats()
-for x in test:
-    print(x)
+#test = getStats()
+#print(test)
 
 '''BAD METHOD
 def sieve(step):
