@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 def removeABs(step):
     for i in range(len(step)):
         while('<' in step[i]):
@@ -8,7 +10,7 @@ def removeABs(step):
 def toDict(step):
     ret = []
     while len(step)!=0:
-        ret.append((step[0], [int(step[i+1]) for i in range(6)]))
+        ret.append((step[0].lower(), [int(step[i+1]) for i in range(6)]))
         step = step[7:]
     return dict(ret)
 
@@ -34,8 +36,8 @@ def getEVs():
     return step5
 
 #test = getEVs()
-#for x in test:
-#    print(x)
+#test2 = getEVs()
+#print(test == test2)
 
 def getStats():
     f = open('stats.html', 'r+')
@@ -59,7 +61,8 @@ def getStats():
     return step5
 
 #test = getStats()
-#print(test)
+#test2 = getStats()
+#print(test == test2)
 
 '''BAD METHOD
 def sieve(step):
