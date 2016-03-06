@@ -10,6 +10,10 @@ def removeABs(step):
 def toDict(step):
     ret = []
     while len(step)!=0:
+        if '♀' in step[0]: 
+            step[0] = step[0][:-1] + 'F'
+        if '♂' in step[0]:
+            step[0] = step[0][:-1] + 'M'
         ret.append((step[0].lower(), [int(step[i+1]) for i in range(6)]))
         step = step[7:]
     return dict(ret)
