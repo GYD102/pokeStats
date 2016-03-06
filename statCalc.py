@@ -1,10 +1,15 @@
 from math import ceil, floor
+from getStuff import *
+from natures import *
+
+#evs = getEVs()
+base = getStats()
 
 levelMessage = 'Please enter Pokemon level\n'
 statMessage = 'Please enter stats in the following format\nHP,AT,DE,SA,SD,SP\n'
 evMessage = 'Please enter EVs in the following format\nHP,AT,DE,SA,SD,SP\n'
-baseMessage = 'Please enter bases in the following format\nHP,AT,DE,SA,SD,SP\n'
-natureMessage = 'Please enter nature in the following format\nHP,AT,DE,SA,SD,SP\n'
+baseMessage = 'Please enter pokemon name for base stats: '
+natureMessage = 'Please enter nature: '
 
 lvl = int(input(levelMessage))
 
@@ -15,10 +20,10 @@ evstr = input(evMessage)
 evlist = [int(x) for x in evstr.split(',')]
 
 basestr = input(baseMessage)
-baselist = [int(x) for x in basestr.split(',')]
+baselist = base[basestr]
 
 naturestr = input(natureMessage)
-naturelist = [float(x) for x in naturestr.split(',')]
+naturelist = nature(naturestr)
 
 #print(statlist)
 
@@ -58,7 +63,7 @@ def statrange(l1, l2, l3, l4, stat):
     value = l1[stat]
     ev = l2[stat]
     base = l3[stat]
-    nature = l4[stat]
+    nature = l4[stat-1]
 
     #x = [lvl, value, ev, base, nature]
     #print(x)
