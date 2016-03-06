@@ -1,4 +1,4 @@
-from natures import nature
+from natures import *
 from io import UnsupportedOperation
 from getStuff import *
 from calculations import *
@@ -25,7 +25,7 @@ def parseTrackFile(name):
         dic = {'name':name}
         dic['pokemon'] = l[0]
         dic['level'] = int(l[1])
-        dic['nature'] = nature(l[2])
+        dic['nature'] = l[2]
         dic['stats'] = [int(x) for x in l[3].split(',')]
         dic['evs'] = [int(x) for x in l[4].split(',')]
         l5 = [int(x) for x in l[5].split(',')]
@@ -49,7 +49,7 @@ def parseTrackFile(name):
 
         nat = input('Enter the Pokemon\'s nature: ')
         f.write(nat+'\n')
-        dic['nature'] = nature(nat)
+        dic['nature'] = nat
         print('')
 
         stats = input('Enter the Pokemon\'s stats separated by commas (no spaces):\n')
@@ -94,27 +94,59 @@ class Pokemon:
         self.evs = [a+b for a,b in zip(self.evs, evs[name])]
 
     def lvlup(self, newStats):
+        #print(self.level)
         self.level = self.level + 1
         self.stats = newStats
+        #print(self.level)
         hp = hprange(self.level, newStats[0], self.evs[0], 
                      stats[self.pokemon][0])
         attackrange = statrange(self.level, newStats[1], self.evs[1], 
-                                stats[self.pokemon][1], self.nature[0])
+                                stats[self.pokemon][1], nature(self.nature)[0])
         defenserange = statrange(self.level, newStats[2], self.evs[2], 
-                                 stats[self.pokemon][2], self.nature[1])
+                                 stats[self.pokemon][2], nature(self.nature)[1])
         spattackrange = statrange(self.level, newStats[3], self.evs[3],
-                                  stats[self.pokemon][3], self.nature[2])
+                                  stats[self.pokemon][3], nature(self.nature)[2])
         spdefenserange = statrange(self.level, newStats[4], self.evs[4], 
-                                   stats[self.pokemon][4], self.nature[3])
+                                   stats[self.pokemon][4], nature(self.nature)[3])
         speedrange = statrange(self.level, newStats[5], self.evs[5], 
-                               stats[self.pokemon][5], self.nature[4])
+                               stats[self.pokemon][5], nature(self.nature)[4])
         self.ivs = [hp,attackrange,defenserange,spattackrange,
                     spdefenserange,speedrange]
 
-test = Pokemon(parseTrackFile('amg'))
-print(test)
-test.lvlup([30,30,30,30,30,30])
-print(test)
+    def writeFile(self):
+        f = open('%s.txt' % self.name, 'w')
+        f.write(self.pokemon+'\n')
+        f.write(str(self.level)+'\n')
+        f.write(self.nature+'\n')
+        
+        statString = ''
+        for x in self.stats:
+            statString = statString + str(x) + ','
+        statString = statString[:-1]
+        f.write(statString+'\n')
+
+        evString = ''
+        for x in self.evs:
+            evString = evString + str(x) + ','
+        evString = evString[:-1]
+        f.write(evString+'\n')
+
+        ivString = ''
+        for x in self.ivs:
+            ivString = ivString + str(x[0]) + ',' + str(x[1]) + ','
+        ivString = ivString[:-1]
+        f.write(ivString+'\n')
+        
+        f.close()
+
+
+#test = Pokemon(parseTrackFile('amg'))
+#print(test)
+#test.lvlup([30,30,30,30,30,30])
+#print(test)
+#test.writeFile()
+#test = Pokemon(parseTrackFile('amg'))
+#print(test)
 #test.beat('rattata')
 #print(test)
 #test.addEVs([5,5,5,5,5,5])
@@ -123,13 +155,15 @@ print(test)
 
 #def commands(string):
 '''
-beat --pokemonname--
-    lvlup
-    write
-    exit
-    evolve --into--
+beat --pokemonname-- X
+lvlup                X
+write                X
+exit
+evolve --into--      Future
 '''
 
 #print(parseTrackFile('bulby'))
 #print(parseTrackFile('imagine'))
 
+if __name__ == "__main__":
+    
