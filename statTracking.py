@@ -34,42 +34,81 @@ def parseTrackFile(name):
         #    print(i)
         dic['ivs'] = [(l5[i*2], l5[i*2+1]) for i in range(len(l5)//2)]
         return dic
+
     except UnsupportedOperation:
-        f.close()
         dic = {'name':name}
+
         dic['pokemon'] = input('This is a new Pokemon. Please enter the pokemon\'s species: ')
+        f.write(dic['pokemon']+'\n')
         print('')
+
         dic['level'] = int(input('Enter the Pokemon\'s level: '))
+        f.write(str(dic['level'])+'\n')
         print('')
-        dic['nature'] = nature(input('Enter the Pokemon\'s nature: '))
+
+        nat = input('Enter the Pokemon\'s nature: ')
+        f.write(nat+'\n')
+        dic['nature'] = nature(nat)
         print('')
+
         stats = input('Enter the Pokemon\'s stats separated by commas (no spaces):\n')
         dic['stats'] = [int(x) for x in stats.split(',')]
+        f.write(stats+'\n')
         print('')
+
         if input('Is this pokemon freshly caught? (y/n): ')=='y':
             dic['evs'] = [0,0,0,0,0,0]
+            f.write('0,0,0,0,0,0\n')
         else:
-            dic['evs'] = [int(x) for x in input('Enter EVs separated by commas (no spaces):\n').split(',')]
+            evs = input('Enter EVs separated by commas (no spaces):\n')
+            dic['evs'] = [int(x) for x in evs.split(',')]
+            f.write(evs+'\n')
         print('')
+
         dic['ivs'] = [(1,31) for x in range(6)]
+        f.write('1,31,1,31,1,31,1,31,1,31,1,31\n')
+        f.close()
         return dic
 
+class Pokemon:
+    def __init__(self, dictionary):
+        self.name = dictionary['name']
+        self.pokemon = dictionary['pokemon']
+        self.level = dictionary['level']
+        self.nature = dictionary['nature']
+        self.stats = dictionary['stats']
+        self.evs = dictionary['evs']
+        self.ivs = dictionary['ivs']
 
+    def __str__(self):
+        return (str(self.name)+'\n'+
+                str(self.pokemon)+'\n'+
+                str(self.level)+'\n'+
+                str(self.nature)+'\n'+
+                str(self.stats)+'\n'+
+                str(self.evs)+'\n'+
+                str(self.ivs)+'\n')
 
-def beat(dic, name):
-    dic['evs'] = [a+b for a,b in zip(dic['evs'],evs[name])]
+    def addEVs(self,added):
+        self.evs = [a+b for a,b in zip(self.evs, added)]
+
+test = Pokemon(parseTrackFile('amg'))
+print(test)
+#test.addEVs([5,5,5,5,5,5])
+#test.name = 'lmao'
+#print(test)
     
 
 
 
 #def commands(string):
-    '''
-    beat --pokemonname--
+'''
+beat --pokemonname--
     lvlup
     write
     exit
     evolve --into--
-    '''
+'''
 
 #print(parseTrackFile('bulby'))
 #print(parseTrackFile('imagine'))
