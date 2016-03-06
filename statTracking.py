@@ -72,7 +72,8 @@ def parseTrackFile(name):
         return dic
 
 class Pokemon:
-    def __init__(self, dictionary):
+    def __init__(self, nickname):
+        dictionary = parseTrackFile(nickname)
         self.name = dictionary['name']
         self.pokemon = dictionary['pokemon']
         self.level = dictionary['level']
@@ -110,8 +111,14 @@ class Pokemon:
                                    stats[self.pokemon][4], nature(self.nature)[3])
         speedrange = statrange(self.level, newStats[5], self.evs[5], 
                                stats[self.pokemon][5], nature(self.nature)[4])
-        self.ivs = [hp,attackrange,defenserange,spattackrange,
-                    spdefenserange,speedrange]
+        oldivs = self.ivs
+        self.ivs = [(max(hp[0],oldivs[0][0]),min(hp[1],oldivs[0][1])),
+                    (max(attackrange[0],oldivs[1][0]),min(attackrange[1],oldivs[1][1])),
+                    (max(defenserange[0],oldivs[2][0]),min(defenserange[1],oldivs[2][1])),
+                    (max(spattackrange[0],oldivs[3][0]),min(spattackrange[1],oldivs[3][1])),
+                    (max(spdefenserange[0],oldivs[4][0]),min(spdefenserange[1],oldivs[4][1])),
+                    (max(speedrange[0],oldivs[5][0]),min(speedrange[1],oldivs[5][1]))]
+
 
     def writeFile(self):
         f = open('%s.txt' % self.name, 'w')
@@ -166,4 +173,30 @@ evolve --into--      Future
 #print(parseTrackFile('imagine'))
 
 if __name__ == "__main__":
-    
+    print('Welcome to Pokemon Stat Tracker v1.0')
+    mon = Pokemon(input('Enter the Nickname of the Pokemon to be tracked: '))
+    print('\nWe are now tracking %s the %s.\n' % (mon.name, mon.pokemon))
+    print('Here are the commands you can input: \n1) "display": displays '+
+          'the stats of the tracked pokemon.\n2) "beat [pokemon species]":'+
+          ' updates the EVs based on the pokemon defeated.\n3) "lvlup":'+
+          ' levels up tracked pokemon and updates IV ranges.\n4) "write":'+
+          ' writes the (likely different) tracked stats to the tracking file.'+
+          '\n5) "exit": exits the program and automatically writes progress'+
+          ' to the tracking file.\n\n')
+    flag = True
+    while(flag):
+        command = input('Please enter a command: ').split()
+        print()
+        if command[0] == "display":
+            print(mon)
+        elif command[0] == "beat":
+            mon.beat(command[1])
+        elif command[0] == "lvlup":
+            mon.lvlup([int(x) for x in 
+                       input('Please input new stat values separated by spaces '+ 
+                             'in the standard order: ').split()])
+            print()
+        elif command[0] == "write":
+            mon.writeFile()
+        elif command[0] == "exit":
+            flag = False
