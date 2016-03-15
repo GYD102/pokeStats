@@ -20,8 +20,11 @@ def toDict(step):
         step = step[7:]
     return dict(ret)
 
-def getEVs():
-    t = urlopen("http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_effort_value_yield_%28Generation_III-IV%29").read().decode("utf-8")
+def getEVs(gen):
+    if (gen < 5):
+        t = urlopen("http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_effort_value_yield_%28Generation_III-IV%29").read().decode("utf-8")
+    else:
+        t = urlopen("http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_effort_value_yield").read().decode("utf-8")
 
     #step1 = s.split('<')
     step1 = t.splitlines()
@@ -43,12 +46,16 @@ def getEVs():
 #test2 = getEVs()
 #print(test == test2)
 
-def getStats():
+def getStats(gen):
     #f = open('stats.html', 'r+')
     #s = f.read()
     #f.close()
-    
-    s = urlopen("http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_%28Generation_II-V%29").read().decode("utf-8")
+    if (gen == 1):
+        s = urlopen("http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_%28Generation_I%29").read().decode("utf-8")
+    elif (gen < 6):
+        s = urlopen("http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_%28Generation_II-V%29").read().decode("utf-8")
+    else:
+        s = urlopen("http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_%28Generation_VI-present%29").read().decode("utf-8")
 
     #step1 = s.split('<')
     step1 = s.splitlines()
