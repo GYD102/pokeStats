@@ -30,7 +30,9 @@ if __name__ == "__main__":
         command = input('>>> ').split()
         #print()
         if len(command) == 1:
-            if command[0] == "exit":
+            if command[0] == "clear":
+                os.system('clear')
+            elif command[0] == "exit":
                 flag = False
             elif command[0] == "help":
                 print(commands)
