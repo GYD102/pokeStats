@@ -1,0 +1,87 @@
+natures.py
+    Import: none
+
+    Vars: none
+
+    Def:
+    nature(nat) 
+      > returns list of nature coefficients based on nature name
+      > nat: nature name
+      > Uses: none
+
+calculations.py
+    Import: math.ceil; math.floor
+
+    Vars: none
+
+    Def:
+    hprange(lvl, hp, ev, base):
+      > returns range of possible HP IVs.
+      > lvl: pokemon lvl; hp: pokemon max hp; ev: pokemon HP EV;
+        base: pokemon base HP
+      > Uses: math.ceil; math.floor
+    statrange(lvl, value, ev, base, nature):
+      > returns range of possible Stat IVs.
+      > lvl: pokemon lvl; hp: pokemon stat; ev: pokemon stat EV;
+        base: pokemon base stat; nature: pokemon nature coefficient
+      > Uses: math.ceil; math.floor
+
+
+statTracking.py
+    Import: natures.*, io.UnsupportedOperation, getStuff.*, calculations.*
+    
+    Vars: evs, stats
+
+    Def:
+    getTrackFile(name):
+      > returns open file object based on pokemon (nick)name
+      > name: string of pokemon nickname
+      > Uses: none
+    parseTrackFile(name):
+      > returns dictionary object representation of the pokemon:
+        {'name':name; 'pokemon':species; 'lvl': level; ...}
+	If a file does not exist for this Nickname, create a new one using user
+	input.
+      > name: pokemon's (nick)name
+      > Uses: getTrackFile()
+    class Pokemon:
+      > __init__(self, nickname)
+      > __str__(self)
+      > beat(self, name)
+        Changes Pokemon's EVs based on Pokemon it beat
+      > undo(self, name)
+      	Undo beat() in case of error
+      > lvlup(self, newStats)
+      > writeFile(self)
+      > Uses: parseTrackFile(), hprange(), statRange(), evs
+
+    
+
+getStuff.py
+    Import: urllib.request.urlopen
+
+    Vars: none
+
+    Def:
+    removeABs(step):
+      > returns a filetext (step) devoid of text surrounded by (and including)
+        angle brackets
+      > step: list of strings which are lines of the HTML file
+      > Uses: none
+    toDict(step):
+      > takes list of strings ['arbok','1','2','3','4','5','6','charmander',
+			       '1','2','3','4',5','6']
+	and creates a dictionary: {'arbok':[1,2,3,4,5,6], 
+	    	      		   'charmander':[1,2,3,4,5,6]}
+      > step: list of strings
+      > Uses: none
+    getEVs(gen):
+      > returns a dictionary format for Pokemon EV-yields
+      	{'name':[ev-yields], 'name':[ev-yields]...}
+      > gen: retrieves EV yields for appropriate game generation from internet
+      > Uses: removeABs, toDict
+    getStats(gen):
+      > returns a dictionary format for Pokemon base stats
+      	{'name':[base stats], 'name':[base stats]...}
+      > gen: retrieves base stats for appropriate game generation from internet
+      > Uses: removeABs, toDict
