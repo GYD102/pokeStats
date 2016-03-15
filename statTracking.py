@@ -1,28 +1,6 @@
 from getStuff import *
 from pokemonClass import *
 
-#print(test)
-#test.writeFile()
-#test = Pokemon(parseTrackFile('amg'))
-#print(test)
-#test.beat('rattata')
-#print(test)
-#test.addEVs([5,5,5,5,5,5])
-#test.name = 'lmao'
-#print(test)
-
-#def commands(string):
-'''
-beat --pokemonname-- X
-lvlup                X
-write                X
-exit
-evolve --into--      Future
-'''
-
-#print(parseTrackFile('bulby'))
-#print(parseTrackFile('imagine'))
-
 if __name__ == "__main__":
     print('Welcome to Pokemon Stat Tracker v1.0')
     gen = int(input('Enter the generation of the game being played (1 - 7): '))
