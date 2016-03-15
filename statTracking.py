@@ -1,5 +1,6 @@
 from getStuff import *
 from pokemonClass import *
+import os
 
 # Command descriptions:
 beat = "[nickname] beat [species]\n    Updates [nickname]'s EVs after defeating a [species].\n"
