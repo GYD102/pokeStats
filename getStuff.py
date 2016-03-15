@@ -1,5 +1,7 @@
 # -*- encoding: utf-8 -*-
 
+from urllib.request import urlopen
+
 def removeABs(step):
     for i in range(len(step)):
         while('<' in step[i]):
@@ -19,12 +21,10 @@ def toDict(step):
     return dict(ret)
 
 def getEVs():
-    f = open('evyields.html', 'r+')
-    s = f.read()
-    f.close()
-    
+    t = urlopen("http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_effort_value_yield_%28Generation_III-IV%29").read().decode("utf-8")
+
     #step1 = s.split('<')
-    step1 = s.splitlines()
+    step1 = t.splitlines()
     
     step2 = [x for x in step1 if (('FF5959' in x) or 
                                   ('F5AC78' in x) or
@@ -44,10 +44,12 @@ def getEVs():
 #print(test == test2)
 
 def getStats():
-    f = open('stats.html', 'r+')
-    s = f.read()
-    f.close()
+    #f = open('stats.html', 'r+')
+    #s = f.read()
+    #f.close()
     
+    s = urlopen("http://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_%28Generation_II-V%29").read().decode("utf-8")
+
     #step1 = s.split('<')
     step1 = s.splitlines()
     
