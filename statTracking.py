@@ -3,8 +3,8 @@ from io import UnsupportedOperation
 from getStuff import *
 from calculations import *
 
-evs = getEVs()
-stats = getStats()
+evs = getEVs(gen)
+stats = getStats(gen)
 
 #print(evs['charmander'])
 #print(stats['bulbasaur'])
@@ -26,9 +26,9 @@ def parseTrackFile(name):
         dic['pokemon'] = l[0]
         dic['level'] = int(l[1])
         dic['nature'] = l[2]
-        dic['stats'] = [int(x) for x in l[3].split(',')]
-        dic['evs'] = [int(x) for x in l[4].split(',')]
-        l5 = [int(x) for x in l[5].split(',')]
+        dic['stats'] = [int(x) for x in l[3].split()]
+        dic['evs'] = [int(x) for x in l[4].split()]
+        l5 = [int(x) for x in l[5].split()]
         #print(l5)
         #print(type(len(l5)))
         #for i in range(len(l5)/2):
@@ -52,22 +52,22 @@ def parseTrackFile(name):
         dic['nature'] = nat
         print('')
 
-        stats = input('Enter the Pokemon\'s stats separated by commas (no spaces):\n')
-        dic['stats'] = [int(x) for x in stats.split(',')]
+        stats = input('Enter the Pokemon\'s stats separated by spaces:\n')
+        dic['stats'] = [int(x) for x in stats.split()]
         f.write(stats+'\n')
         print('')
 
         if input('Is this pokemon freshly caught? (y/n): ')=='y':
             dic['evs'] = [0,0,0,0,0,0]
-            f.write('0,0,0,0,0,0\n')
+            f.write('0 0 0 0 0 0\n')
         else:
-            evs = input('Enter EVs separated by commas (no spaces):\n')
-            dic['evs'] = [int(x) for x in evs.split(',')]
+            evs = input('Enter EVs separated by spaces:\n')
+            dic['evs'] = [int(x) for x in evs.split()]
             f.write(evs+'\n')
         print('')
 
         dic['ivs'] = [(1,31) for x in range(6)]
-        f.write('1,31,1,31,1,31,1,31,1,31,1,31\n')
+        f.write('1 31 1 31 1 31 1 31 1 31 1 31\n')
         f.close()
         return dic
 
@@ -93,6 +93,9 @@ class Pokemon:
 
     def beat(self, name):
         self.evs = [a+b for a,b in zip(self.evs, evs[name])]
+
+    def undo(self, name):
+        self.evs = [a-b for a,b in zip(self.evs, evs[name])]
 
     def lvlup(self, newStats):
         #print(self.level)
@@ -128,19 +131,19 @@ class Pokemon:
         
         statString = ''
         for x in self.stats:
-            statString = statString + str(x) + ','
+            statString = statString + str(x) + ' '
         statString = statString[:-1]
         f.write(statString+'\n')
 
         evString = ''
         for x in self.evs:
-            evString = evString + str(x) + ','
+            evString = evString + str(x) + ' '
         evString = evString[:-1]
         f.write(evString+'\n')
 
         ivString = ''
         for x in self.ivs:
-            ivString = ivString + str(x[0]) + ',' + str(x[1]) + ','
+            ivString = ivString + str(x[0]) + ' ' + str(x[1]) + ' '
         ivString = ivString[:-1]
         f.write(ivString+'\n')
         
@@ -174,15 +177,11 @@ evolve --into--      Future
 
 if __name__ == "__main__":
     print('Welcome to Pokemon Stat Tracker v1.0')
+    gen = int(input('Enter the generation of the game being played (1 - 7)'))
     mon = Pokemon(input('Enter the Nickname of the Pokemon to be tracked: '))
     print('\nWe are now tracking %s the %s.\n' % (mon.name, mon.pokemon))
-    print('Here are the commands you can input: \n1) "display": displays '+
-          'the stats of the tracked pokemon.\n2) "beat [pokemon species]":'+
-          ' updates the EVs based on the pokemon defeated.\n3) "lvlup":'+
-          ' levels up tracked pokemon and updates IV ranges.\n4) "write":'+
-          ' writes the (likely different) tracked stats to the tracking file.'+
-          '\n5) "exit": exits the program and automatically writes progress'+
-          ' to the tracking file.\n\n')
+    commands = 'Here are the commands you can input: \n1) "display": displays the stats of the tracked pokemon.\n2) "beat [pokemon species]": updates the EVs based on the Pokemon defeated.\n3) "undo [pokemon species]": undo the "beat" command in case of error.\n4) "lvlup": levels up the tracked pokemon and updates IV ranges.\n5) "write": writes the tracked stats to the tracking file.\n6) "exit": exists the program and automatically writes progress.\n7) "stats [pokemon species]": Display the base stats of the pokemon.\n8) "evyield [pokemon species]": Display the EV yields of the pokemon.\n9) "commands": display these commands again.\n\n'
+    print(commands)
     flag = True
     while(flag):
         command = input('Please enter a command: ').split()
@@ -190,13 +189,36 @@ if __name__ == "__main__":
         if command[0] == "display":
             print(mon)
         elif command[0] == "beat":
-            mon.beat(command[1])
+            try:
+                mon.beat(command[1])
+            except KeyError:
+                print('This is not a valid Pokemon\n')
+        elif command[0] == "undo":
+            try:
+                mon.undo(command[1])
+            except KeyError:
+                print('This is not a valid Pokemon\n')
         elif command[0] == "lvlup":
-            mon.lvlup([int(x) for x in 
-                       input('Please input new stat values separated by spaces '+ 
-                             'in the standard order: ').split()])
+            try:
+                mon.lvlup([int(x) for x in 
+                           input('Please input new stat values separated by spaces '+ 
+                                 'in the standard order: ').split()])
+            except IndexError:
+                print('This is not the correct number of stat values.\n')
             print()
+        elif command[0] == "commands":
+            print(commands)
         elif command[0] == "write":
             mon.writeFile()
+        elif command[0] == "stats":
+            try:
+                print(stats[command[1]])
+            except KeyError:
+                print('This is not a valid Pokemon\n')
+        elif command[0] == "evyield":
+            try:
+                print(evs[command[1]])
+            except KeyError:
+                print('This is not a valid Pokemon\n')
         elif command[0] == "exit":
             flag = False
