@@ -1,52 +1,106 @@
 from getStuff import *
 from pokemonClass import *
 
+# Command descriptions:
+beat = "[nickname] beat [species]\n    Updates [nickname]'s EVs after defeating a [species].\n"
+display = "display [nickname]\n    Displays the current tracking information of [nickname].\n"
+evyield = "evyield [species]\n    Displays the EVs yielded by [species].\n"
+ex = "exit\n    Exits the tracking program WITHOUT writing tracking data to tracking file.\n"
+hlp = "help ([command])\n    Displays usage information about [command] or about all commands if one isn't specified.\n"
+lvlup = "lvlup [nickname]\n    Updates tracking information, recalculates IV ranges.\n"
+stats = "stats [species]\n    Displays the base stats of [species].\n"
+track = "track [nickname]\n    Adds [nickname] to the list of Pokemon being tracked.\n"
+trackng = "tracking\n    Displays list of all Pokemon currently being tracked.\n"
+undo = "[nickname] undo [species]\n    Removes EVs yielded by [species] to [nickname].\n"
+untrack = "untrack [nickname]\n    Removes [nickname] from list of Pokemon being tracked.\n"
+write = "write [nickname]\n    Write tracking information to [nickname]'s tracking file.\n"
+
+invPok = "This is not a valid Pokemon."
+
+commands = beat + display + evyield + ex + hlp + lvlup + stats + track + trackng + undo + untrack + write
+
 if __name__ == "__main__":
     print('Welcome to Pokemon Stat Tracker v1.0')
     gen = int(input('Enter the generation of the game being played (1 - 7): '))
     stats = getStats(gen)
     evs = getEVs(gen)
-    mon = Pokemon(input('Enter the Nickname of the Pokemon to be tracked: '))
-    print('\nWe are now tracking %s the %s.\n' % (mon.name, mon.pokemon))
-    commands = 'Here are the commands you can input: \n1) "display": displays the stats of the tracked pokemon.\n2) "beat [pokemon species]": updates the EVs based on the Pokemon defeated.\n3) "undo [pokemon species]": undo the "beat" command in case of error.\n4) "lvlup": levels up the tracked pokemon and updates IV ranges.\n5) "write": writes the tracked stats to the tracking file.\n6) "exit": exists the program and automatically writes progress.\n7) "stats [pokemon species]": Display the base stats of the pokemon.\n8) "evyield [pokemon species]": Display the EV yields of the pokemon.\n9) "commands": display these commands again.\n\n'
-    print(commands)
+    tracking = {}
     flag = True
     while(flag):
-        command = input('Please enter a command: ').split()
-        print()
-        if command[0] == "display":
-            print(mon)
-        elif command[0] == "beat":
+        command = input('>>> ').split()
+        #print()
+        if len(command) == 1:
+            if command[0] == "exit":
+                flag = False
+            elif command[0] == "help":
+                print(commands)
+            elif command[0] == "tracking":
+                print(list(tracking.keys()))
+        elif command[1] == "beat":
             try:
-                mon.beat(command[1], evs)
+                tracking[command[0]].beat(command[2], evs)
             except KeyError:
-                print('This is not a valid Pokemon\n')
-        elif command[0] == "undo":
+                print(invPok)
+        elif command[0] == "display":
             try:
-                mon.undo(command[1], evs)
+                print(tracking[command[1]])
             except KeyError:
-                print('This is not a valid Pokemon\n')
-        elif command[0] == "lvlup":
-            try:
-                mon.lvlup([int(x) for x in 
-                           input('Please input new stat values separated by spaces '+ 
-                                 'in the standard order: ').split()], stats)
-            except IndexError:
-                print('This is not the correct number of stat values.\n')
-            print()
-        elif command[0] == "commands":
-            print(commands)
-        elif command[0] == "write":
-            mon.writeFile()
-        elif command[0] == "stats":
-            try:
-                print(stats[command[1]])
-            except KeyError:
-                print('This is not a valid Pokemon\n')
+                print("This Pokemon is not currently being tracked.")
         elif command[0] == "evyield":
             try:
                 print(evs[command[1]])
             except KeyError:
-                print('This is not a valid Pokemon\n')
-        elif command[0] == "exit":
-            flag = False
+                print(invPok)
+        elif command[0] == "help":
+            if command[1] == "beat":
+                print(beat)
+            elif command[1] == "display":
+                print(display)
+            elif command[1] == "evyield":
+                print(evyield)
+            elif command[1] == "exit":
+                print(ex)
+            elif command[1] == "help":
+                print(hlp)
+            elif command[1] == "lvlup":
+                print(lvlup)
+            elif command[1] == "stats":
+                print(stats)
+            elif command[1] == "track":
+                print(track)
+            elif command[1] == "tracking":
+                print(trackng)
+            elif command[1] == "undo":
+                print(undo)
+            elif command[1] == "untrack":
+                print(untrack)
+            elif command[1] == "write":
+                print(write)
+            else:
+                print("This is not a valid command.")
+        elif command[0] == "lvlup":
+            try:
+                tracking[command[1]].lvlup([int(x) for x in 
+                           input('Please input new stat values separated by spaces '+ 
+                                 'in the standard order: ').split()], stats)
+            except IndexError:
+                print('This is not the correct number of stat values.\n')
+        elif command[0] == "stats":
+            try:
+                print(stats[command[1]])
+            except KeyError:
+                print(invPok)
+        elif command[0] == "track":
+            tracking[command[1]] = Pokemon(command[1])
+        elif command[1] == "undo":
+            try:
+                tracking[command[0]].undo(command[2], evs)
+            except KeyError:
+                print(invPok)
+        elif command[0] == "untrack":
+            try:
+                del tracking[command[1]]
+            except KeyError:
+                print("This Pokemon is not currently being tracked.")
+        elif command[0] == "write":
+            tracking[command[1]].writeFile()
