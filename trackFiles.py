@@ -6,8 +6,7 @@ def getTrackFile(name):
     except FileNotFoundError:
         return open(('%s.txt' % name),'w')
 
-def createTrackFile(name):
-    f = getTrackFile(name)
+def createTrackFile(name, f):
     dic = {'name':name}
 
     dic['pokemon'] = input('This is a new Pokemon. Please enter the pokemon\'s species: ')
@@ -63,5 +62,4 @@ def parseTrackFile(name):
         dic['ivs'] = [(l5[i*2], l5[i*2+1]) for i in range(len(l5)//2)]
         return dic
     except UnsupportedOperation:
-        createTrackFile(name)
-
+        return createTrackFile(name, f)
