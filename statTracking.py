@@ -88,6 +88,8 @@ if __name__ == "__main__":
                                  'in the standard order: ').split()], stats)
             except IndexError:
                 print('This is not the correct number of stat values.\n')
+            except KeyError:
+                print('This Pokemon is not being tracked.\n')
         elif command[0] == "stats":
             try:
                 print(stats[command[1]])
@@ -106,4 +108,7 @@ if __name__ == "__main__":
             except KeyError:
                 print("This Pokemon is not currently being tracked.")
         elif command[0] == "write":
-            tracking[command[1]].writeFile()
+            try:
+                tracking[command[1]].writeFile()
+            except KeyError:
+                print("This Pokemon is not currently being tracked.")
